@@ -1,9 +1,8 @@
 # AutoPark - Documentação de Projeto
 
----
-Disciplina: Projeto de Software Professor: João Paulo Carneiro Aramuni 
-Aluno: Pedro Teodoro Castro Valadares
----
+**Disciplina:** Projeto de Software
+**Professor:** João Paulo Carneiro Aramuni
+**Aluno:** Pedro Teodoro Castro Valadares 
 
 Este repositório armazena toda a documentação de projeto do **AutoPark**, um sistema fictício de gerenciamento de estacionamento rotativo.
 
