@@ -1,0 +1,19 @@
+@startuml
+skinparam linetype ortho
+
+actor Operador
+participant ":Sistema AutoPark" as Sistema
+
+title DSS para UC-02: Registrar Saída de Veículo
+
+Operador -> Sistema: solicitarSaida(idTicket)
+activate Sistema
+Sistema --> Operador: detalhesCobranca (valorTotal, tempoPermanencia)
+deactivate Sistema
+
+Operador -> Sistema: confirmarPagamento(idTicket)
+activate Sistema
+Sistema --> Operador: recibo (status: 'Pago')
+deactivate Sistema
+
+@enduml

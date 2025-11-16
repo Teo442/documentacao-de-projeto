@@ -1,0 +1,14 @@
+@startuml
+skinparam linetype ortho
+
+actor Operador
+participant ":Sistema AutoPark" as Sistema
+
+title DSS para UC-01: Registrar Entrada de Veículo
+
+Operador -> Sistema: registrarEntrada(placa)
+activate Sistema
+Sistema --> Operador: ticketGerado (ID, Placa, HoraEntrada)
+deactivate Sistema
+
+@enduml

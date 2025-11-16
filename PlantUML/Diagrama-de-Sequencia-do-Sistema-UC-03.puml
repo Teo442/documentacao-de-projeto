@@ -1,0 +1,14 @@
+@startuml
+skinparam linetype ortho
+
+actor Operador
+participant ":Sistema AutoPark" as Sistema
+
+title DSS para UC-03: Consultar Status das Vagas
+
+Operador -> Sistema: consultarVagas()
+activate Sistema
+Sistema --> Operador: statusVagas (totalLivres, totalOcupadas)
+deactivate Sistema
+
+@enduml
