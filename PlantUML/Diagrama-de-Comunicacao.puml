@@ -1,0 +1,32 @@
+@startuml
+skinparam linetype ortho
+
+' O ator que inicia
+actor Operador
+
+' Os componentes/objetos
+participant "spa: Aplicação Web" as SPA
+participant "ctrl: TicketController" as Controller
+participant "serv: TicketService" as Service
+participant "repo: TicketRepository" as TicketRepo
+participant "repo: TarifaRepository" as TarifaRepo
+participant "repo: VagaRepository" as VagaRepo
+
+' Mensagens numeradas do fluxo (os links são desenhados pelas mensagens)
+Operador -> SPA: 1: solicitaSaida(idTicket)
+SPA -> Controller: 1.1: GET /tickets/{id}/calcular
+Controller -> Service: 1.2: solicitarSaida(idTicket)
+Service -> TicketRepo: 1.3: findById(idTicket)
+Service -> TarifaRepo: 1.4: findActive()
+Controller <-- Service: 1.5: detalhesCobranca
+
+Operador -> SPA: 2: confirmaPagamento(idTicket)
+SPA -> Controller: 2.1: POST /tickets/{id}/pagar
+Controller -> Service: 2.2: confirmarPagamento(idTicket)
+Service -> TicketRepo: 2.3: findById(idTicket)
+Service -> TicketRepo: 2.4: save(ticket)
+Service -> VagaRepo: 2.5: findById(vagaId)
+Service -> VagaRepo: 2.6: save(vaga)
+Controller <-- Service: 2.7: recibo
+
+@enduml

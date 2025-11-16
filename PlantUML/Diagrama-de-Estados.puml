@@ -1,0 +1,33 @@
+@startuml
+skinparam linetype ortho
+
+title Diagrama de Estados do Ticket
+
+[*] --> Aberto : registrarEntrada()
+
+state Aberto {
+  Aberto: O ticket foi criado e associado
+  Aberto: a um veículo e uma vaga.
+  Aberto: O tempo de permanência está
+  Aberto: sendo contabilizado.
+}
+
+Aberto --> Fechado : confirmarPagamento()
+Aberto --> Cancelado : cancelarEntrada()
+
+state Fechado {
+  Fechado: O pagamento foi efetuado e
+  Fechado: o ticket foi finalizado.
+  Fechado: A vaga associada é liberada.
+}
+
+state Cancelado {
+  Cancelado: O ticket foi cancelado pelo
+  Cancelado: operador (ex: registro errado).
+  Cancelado: A vaga associada é liberada.
+}
+
+Fechado --> [*]
+Cancelado --> [*]
+
+@enduml

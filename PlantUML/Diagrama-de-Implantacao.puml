@@ -1,0 +1,24 @@
+@startuml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Deployment.puml
+
+LAYOUT_WITH_LEGEND()
+
+Deployment_Node(cliente, "Máquina do Cliente", "Computador ou Tablet") {
+    Deployment_Node(browser, "Navegador Web", "Chrome, Firefox, etc.") {
+        Container(spa, "Aplicação Web (Frontend)", "JavaScript, React")
+    }
+}
+
+Deployment_Node(cloud, "Provedor de Nuvem (ex: AWS)", "Data Center") {
+    Deployment_Node(app_server, "Servidor de Aplicação", "EC2, Ubuntu Linux") {
+        Container(api, "API REST (Backend)", "Java, Spring Boot")
+    }
+    Deployment_Node(db_server, "Servidor de Banco de Dados", "Serviço Gerenciado (RDS)") {
+        ContainerDb(db, "Banco de Dados", "MySQL")
+    }
+}
+
+Rel(spa, api, "Faz chamadas API", "HTTPS/JSON")
+Rel(api, db, "Lê/Escreve", "JDBC")
+
+@enduml

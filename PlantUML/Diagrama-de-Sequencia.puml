@@ -1,0 +1,95 @@
+@startuml
+skinparam linetype ortho
+autonumber
+
+actor Operador
+participant "spa: Aplicação Web" as SPA
+participant "ctrl: TicketController" as Controller
+participant "serv: TicketService" as Service
+participant "repo: TicketRepository" as TicketRepo
+participant "repo: TarifaRepository" as TarifaRepo
+participant "repo: VagaRepository" as VagaRepo
+database "db: Banco de Dados" as DB
+
+title DS (Projeto) para UC-02: Registrar Saída de Veículo
+
+== 1. Solicitação de Cálculo ==
+
+Operador -> SPA: solicitaSaida(idTicket)
+SPA -> Controller: GET /tickets/{idTicket}/calcular
+activate Controller
+
+Controller -> Service: solicitarSaida(idTicket)
+activate Service
+
+Service -> TicketRepo: findById(idTicket)
+activate TicketRepo
+TicketRepo -> DB: SELECT * FROM TICKET WHERE ID=...
+DB --> TicketRepo: ticketData
+TicketRepo --> Service: ticket (estado="Aberto")
+deactivate TicketRepo
+
+Service -> TarifaRepo: findActive()
+activate TarifaRepo
+TarifaRepo -> DB: SELECT * FROM TARIFA WHERE ...
+DB --> TarifaRepo: tarifaData
+TarifaRepo --> Service: tarifa (valorPorHora)
+deactivate TarifaRepo
+
+Service -> Service: calcularValorTotal(ticket, tarifa)
+Service --> Controller: detalhesCobranca (valor)
+deactivate Service
+
+Controller --> SPA: 200 OK (JSON com valor)
+deactivate Controller
+SPA --> Operador: exibeValorTotal
+
+== 2. Confirmação de Pagamento ==
+
+Operador -> SPA: confirmaPagamento(idTicket)
+SPA -> Controller: POST /tickets/{idTicket}/pagar
+activate Controller
+
+Controller -> Service: confirmarPagamento(idTicket)
+activate Service
+
+' Re-buscar o ticket para garantir consistência
+Service -> TicketRepo: findById(idTicket)
+activate TicketRepo
+TicketRepo -> DB: SELECT * FROM TICKET ...
+DB --> TicketRepo: ticketData (com VagaID)
+TicketRepo --> Service: ticket
+deactivate TicketRepo
+
+' Atualizar o Ticket
+Service -> Service: ticket.setEstado("Fechado")
+Service -> Service: ticket.setHoraSaida(agora)
+Service -> TicketRepo: save(ticket)
+activate TicketRepo
+TicketRepo -> DB: UPDATE TICKET SET ...
+DB --> TicketRepo: 
+deactivate TicketRepo
+
+' Liberar a Vaga
+Service -> VagaRepo: findById(ticket.getVagaId())
+activate VagaRepo
+VagaRepo -> DB: SELECT * FROM VAGA ...
+DB --> VagaRepo: vagaData
+VagaRepo --> Service: vaga
+deactivate VagaRepo
+
+Service -> Service: vaga.setStatus("Livre")
+Service -> VagaRepo: save(vaga)
+activate VagaRepo
+VagaRepo -> DB: UPDATE VAGA SET ...
+DB --> VagaRepo: 
+deactivate VagaRepo
+
+Service --> Controller: recibo (status="Pago")
+deactivate Service
+
+Controller --> SPA: 200 OK (JSON com recibo)
+deactivate Controller
+SPA --> Operador: exibeRecibo
+
+@enduml

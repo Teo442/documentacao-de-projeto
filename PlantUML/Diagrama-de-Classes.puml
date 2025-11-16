@@ -1,0 +1,68 @@
+@startuml
+skinparam linetype ortho
+hide empty members
+
+class Usuario {
+  - id: Long
+  - nome: String
+  - login: String
+  - senhaHash: String
+  + login()
+}
+
+class Operador {
+}
+
+class Administrador {
+  + gerenciarTarifa()
+  + gerenciarOperador()
+}
+
+class Ticket {
+  - id: Long
+  - horaEntrada: DateTime
+  - horaSaida: DateTime
+  - valorTotal: Double
+  - estado: String
+  + calcularValor(): Double
+  + fecharTicket()
+}
+
+class Veiculo {
+  - placa: String
+}
+
+class Vaga {
+  - id: Long
+  - codigo: String
+  - status: VagaStatus
+  + ocupar()
+  + liberar()
+}
+
+enum VagaStatus {
+  LIVRE
+  OCUPADA
+}
+
+class Tarifa {
+  - id: Long
+  - valorPorHora: Double
+  - dataVigencia: Date
+}
+
+' Relacionamentos
+Usuario <|-- Operador
+Usuario <|-- Administrador
+
+Operador "1" -- "0..*" Ticket : "registra"
+Ticket "1" -- "1" Veiculo
+Ticket "1" -- "1" Vaga : "ocupa"
+
+' Ticket usa uma Tarifa para calcular o preço
+Ticket "1" ..> "1" Tarifa : "usa para cálculo"
+
+' Vaga tem um Status
+Vaga "1" -- "1" VagaStatus
+
+@enduml

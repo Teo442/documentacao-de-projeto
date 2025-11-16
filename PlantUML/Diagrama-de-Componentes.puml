@@ -1,0 +1,36 @@
+@startuml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+LAYOUT_WITH_LEGEND()
+
+Container(spa, "Aplicação Web (Frontend)")
+ContainerDb(db, "Banco de Dados")
+
+Container_Boundary(api, "API REST (Backend)") {
+    Component(ticket_controller, "Ticket Controller", "Spring REST Controller", "Recebe requisições HTTP para /tickets")
+    Component(ticket_service, "Ticket Service", "Spring Service", "Lógica de negócio para entradas, saídas e cálculos.")
+    Component(ticket_repo, "Ticket Repository", "Spring Data JPA", "Gerencia a persistência de Tickets.")
+
+    Component(vaga_service, "Vaga Service", "Spring Service", "Lógica de negócio para consultar e atualizar vagas.")
+    Component(vaga_repo, "Vaga Repository", "Spring Data JPA", "Gerencia a persistência de Vagas.")
+    
+    Component(tarifa_service, "Tarifa Service", "Spring Service", "Lógica de negócio para gerenciar tarifas.")
+    Component(tarifa_repo, "Tarifa Repository", "Spring Data JPA", "Gerencia a persistência de Tarifas.")
+}
+
+' Relacionamentos
+Rel(spa, ticket_controller, "Usa", "HTTPS/JSON")
+
+Rel_R(ticket_controller, ticket_service, "Chama")
+Rel_R(ticket_service, vaga_service, "Usa")
+Rel_R(ticket_service, tarifa_service, "Usa")
+
+Rel_R(ticket_service, ticket_repo, "Lê/Escreve")
+Rel_R(vaga_service, vaga_repo, "Lê/Escreve")
+Rel_R(tarifa_service, tarifa_repo, "Lê/Escreve")
+
+Rel_R(ticket_repo, db, "Lê/Escreve", "JDBC")
+Rel_R(vaga_repo, db, "Lê/Escreve", "JDBC")
+Rel_R(tarifa_repo, db, "Lê/Escreve", "JDBC")
+
+@enduml
