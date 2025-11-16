@@ -1,0 +1,14 @@
+@startuml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml
+
+LAYOUT_WITH_LEGEND()
+
+Person(operador, "Operador (Atendente)", "Registra entradas e saídas de veículos.")
+Person(admin, "Administrador (Gerente)", "Gerencia tarifas, usuários e relatórios.")
+
+System(autopark, "Sistema AutoPark", "Sistema de gerenciamento de estacionamento rotativo.")
+
+Rel(operador, autopark, "Usa", "HTTPS")
+Rel(admin, autopark, "Usa", "HTTPS")
+
+@enduml

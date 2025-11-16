@@ -1,0 +1,23 @@
+@startuml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+LAYOUT_WITH_LEGEND()
+
+Person(operador, "Operador (Atendente)", "Registra entradas e saídas de veículos.")
+Person(admin, "Administrador (Gerente)", "Gerencia tarifas, usuários e relatórios.")
+
+System_Boundary(c1, "Sistema AutoPark") {
+    Container(spa, "Aplicação Web (Frontend)", "JavaScript, React", "Interface do usuário no navegador.")
+    Container(api, "API REST (Backend)", "Java, Spring Boot", "Validações, lógica de negócio e regras de tarifação.")
+    ContainerDb(db, "Banco de Dados", "MySQL", "Armazena tickets, vagas, tarifas e usuários.")
+}
+
+' Relacionamentos dos Atores com os Contêineres
+Rel(operador, spa, "Usa", "HTTPS")
+Rel(admin, spa, "Usa", "HTTPS")
+
+' Relacionamentos entre Contêineres
+Rel(spa, api, "Faz chamadas API", "HTTPS/JSON")
+Rel(api, db, "Lê/Escreve", "JDBC")
+
+@enduml
