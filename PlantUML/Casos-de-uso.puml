@@ -1,0 +1,27 @@
+@startuml
+left to right direction
+
+actor Operador
+actor Administrador
+
+rectangle AutoPark {
+  (UC-01: Registrar Entrada de Veículo)
+  (UC-02: Registrar Saída de Veículo)
+  (UC-03: Consultar Status das Vagas)
+  (UC-04: Gerenciar Tarifas)
+  (UC-05: Gerenciar Operadores)
+  (UC-06: Gerar Relatório de Faturamento)
+}
+
+' Casos de Uso do Operador
+Operador --> (UC-01: Registrar Entrada de Veículo)
+Operador --> (UC-02: Registrar Saída de Veículo)
+Operador --> (UC-03: Consultar Status das Vagas)
+
+' Administrador herda os casos do Operador e tem os seus próprios
+Administrador --|> Operador
+Administrador --> (UC-04: Gerenciar Tarifas)
+Administrador --> (UC-05: Gerenciar Operadores)
+Administrador --> (UC-06: Gerar Relatório de Faturamento)
+
+@enduml
